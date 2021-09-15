@@ -32,7 +32,7 @@ try:  # try to count even average
 except ZeroDivisionError:  # if catch exception
     print('even_avg = 0')  # then print that even average equals zero. It means that count of numbers and count of sum equals zero
 
-try:  # try the same as for odd and print value
+try:  # try the same for odd and print value
     odd_avg = odd_sum / odd_count
     print('odd_avg =', odd_avg)
 except ZeroDivisionError:
