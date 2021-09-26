@@ -1,5 +1,4 @@
-import string, unicodedata
-import os, sys, re
+import re
 
 init_text = '''  tHis iz your homeWork, copy these Text to variable.
 
@@ -36,7 +35,7 @@ new_line = []
 # and remove the non-letter from the beginning of the sentence
 # and write all the first letters with a capital letter
 k = init_text.split('.')
-#print(k)
+# print(k)
 for i in k:
     if i.startswith('  ') or i.endswith('  '):
         d = i.lstrip()
