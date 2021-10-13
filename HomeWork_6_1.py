@@ -11,7 +11,7 @@ from HomeWork_4_1 import text_from_list
 from HomeWork_4_1 import list_of_line
 
 
-class By_txt():
+class By_txt:
     def read_from(self, path):
         with open("Posts.txt", "r") as file:
             file.write(path)
