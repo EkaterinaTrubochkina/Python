@@ -9,6 +9,7 @@ import os
 import HomeWork_5_1 as Post
 from HomeWork_4_1 import text_from_list
 from HomeWork_4_1 import list_of_line
+import HomeWork_7 as CSV
 
 
 class By_txt:
@@ -56,9 +57,11 @@ def user_choose():
     txt = input("Do you want to use manual input?\n1 - Yes\n2 - No \n")
     if txt == "1":
         Post.start()
+        CSV.create_csv_words()
     elif txt == "2":
         start = By_txt()
         start.call_txt()
+        CSV.create_csv_words()
     else:
         print('ERROR')
         exit(0)
