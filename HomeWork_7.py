@@ -28,17 +28,36 @@ class GenerateCsv:
                 writer.writerow([word, words[word]])
         csvfile.close()
 
-    def read_all_letters(self, text):
+    def count_all_letters(self, text):
         all_words = re.findall(r'[a-zA-Z]', text)
-        unique = dict(zip(list(all_words),[list(all_words).count(i) for i in list(all_words)]))
-        print(unique)
-        return unique
+        unique = dict(zip(list(all_words), [list(all_words).count(i) for i in list(all_words)]))
+        res = sum(unique.values())
+        return res
 
-    def new_csv_letters(self, words):
+    def read_all_lover_letters(self, text):
+        all_words = re.findall(r'[a-z]', text)
+        lover = dict(zip(list(all_words), [list(all_words).count(i) for i in list(all_words)]))
+        return lover
+
+    def read_all_upper_letters(self, text):
+        all_words = re.findall(r'[A-Z]', text)
+        upper = dict(zip(list(all_words), [list(all_words).count(i) for i in list(all_words)]))
+        upper = {k.lower(): upper[k] for k in upper}
+        return upper
+
+    def new_csv_letters(self, lover_letters, upper_letters, count):
         with open('test_2.csv', 'w') as csvfile:
-            writer = csv.writer(csvfile, delimiter='-')
-            for word in words:
-                writer.writerow([word, words[word]])
+            header = ['letter', 'count_all', 'count_uppercase', 'percentage']
+            writer = csv.DictWriter(csvfile, delimiter='-', fieldnames=header)
+            writer.writeheader()
+            for word in lover_letters:
+                if word in upper_letters:
+                    writer.writerow({'letter': word, 'count_all': (lover_letters[word] + upper_letters[word]),
+                                     'count_uppercase': upper_letters[word], 'percentage': round(100*(lover_letters[word]
+                                                                                                      + upper_letters[word])/count, 2)})
+                else:
+                    writer.writerow({'letter': word, 'count_all': lover_letters[word], 'count_uppercase': '0',
+                                     'percentage': round(100*(lover_letters[word])/count, 2)})
         csvfile.close()
 
 
@@ -48,11 +67,18 @@ def create_csv_words():
     unique_words = call.unique_words(words_from_file)
     call.new_csv_words(unique_words)
 
+
 def create_csv_letters():
     call = GenerateCsv()
     words_from_file = call.read_all()
-    unique_letters = call.read_all_letters(words_from_file)
-    call.new_csv_letters(unique_letters)
+    unique_lover_letters = call.read_all_lover_letters(words_from_file)
+    unique_upper_letters = call.read_all_upper_letters(words_from_file)
+    count_all_letters = call.count_all_letters(words_from_file)
+    call.new_csv_letters(unique_lover_letters, unique_upper_letters, count_all_letters)
 
 
-create_csv_letters()
+if __name__ == '__main__':
+    create_csv_letters()
+
+
+

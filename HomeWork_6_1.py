@@ -58,10 +58,12 @@ def user_choose():
     if txt == "1":
         Post.start()
         CSV.create_csv_words()
+        CSV.create_csv_letters()
     elif txt == "2":
         start = By_txt()
         start.call_txt()
         CSV.create_csv_words()
+        CSV.create_csv_letters()
     else:
         print('ERROR')
         exit(0)
