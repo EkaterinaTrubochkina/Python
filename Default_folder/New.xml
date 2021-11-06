@@ -1,0 +1,20 @@
+<All>
+  <row name="test">
+    <type>News</type>
+    <text>My cat is fun_xml</text>
+    <data>-</data>
+    <city>Minsk</city>
+  </row>
+  <row>
+    <type>Ad</type>
+    <text>I need to sell pen_xml</text>
+    <data>11/11/2021</data>
+    <city>-</city>
+  </row>
+  <row>
+    <type>Recipe</type>
+    <text>My new recite is fun and NOT hard._xml</text>
+    <data>-</data>
+    <city>-</city>
+  </row>
+</All>
