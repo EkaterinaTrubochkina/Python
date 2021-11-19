@@ -11,20 +11,36 @@ import pyodbc
 
 
 class DBConnetion:
-    def __init__(self):
+    def __init__(self, database_name):
         self.conn = None
         self.cur = None
+        self.database_name = database_name
 
-    def connect(self, database_name):
-        self.conn = pyodbc.connect(f'Driver=SQLite3 ODBC Driver;Database={database_name};Direct=True;String Types=Unicode' )
+    def connect(self):
+        self.conn = pyodbc.connect(f'Driver=SQLite3 ODBC Driver;Database={self.database_name};Direct=True;String Types=Unicode' )
         self.cur = self.conn.cursor()
 
     def select(self, field, table):
+        if self.cur is None:
+            raise Exception("No connection to db")
+
         self.cur.execute(f'select {field} from {table}')
         return self.cur.fetchall()
 
+    def select_param(self, field, table, value1, value2):
+        # if self.cur is None:
+        #     raise Exception("No connection to db")
+        self.conn = pyodbc.connect(
+            f'Driver=SQLite3 ODBC Driver;Database={self.database_name};Direct=True;String Types=Unicode')
+        self.cur = self.conn.cursor()
+
+        self.cur.execute(f"select {field} from {table} where text = '{value1}' and advanced= '{value2}'")
+        a = self.cur.fetchall()
+        self.conn.close()
+        return a
+
     def insert(self, table, field1, field2, field3):
-        self.cur.execute(f"""INSERT INTO {table} VALUES ({field1},{field2},{field3})""")
+        self.cur.execute(f"INSERT INTO {table}('text', 'advanced', 'data')  VALUES ('{field1}','{field2}','{field3}')")
         self.cur.commit()
 
     def create_table(self, table, field1, field2, field3):
@@ -48,14 +64,14 @@ class DBConnetion:
 # print(result)
 # cursor.close()
 # connection.close()
-
-dbconn= DBConnetion()
-
-dbconn.connect('test2.db')
-# dbconn.create_table('New', 'first_name', 'city', 'data')
-# dbconn.create_table('Ad', 'text', 'data_until', 'days')
-# dbconn.create_table('Recipe', 'text', 'complexity', 'data')
-dbconn.insert('New', 'text', 'city', 'data')
-a = dbconn.select('*', 'New')
-print(a)
-dbconn.close_conn()
+#
+# dbconn= DBConnetion()
+#
+# dbconn.connect('test2.db')
+# # dbconn.create_table('New', 'first_name', 'city', 'data')
+# # dbconn.create_table('Ad', 'text', 'data_until', 'days')
+# # dbconn.create_table('Recipe', 'text', 'complexity', 'data')
+# dbconn.insert('New', 'text', 'city', 'data')
+# a = dbconn.select('*', 'New')
+# print(a)
+# dbconn.close_conn()

@@ -14,6 +14,8 @@
 
 import datetime
 import HomeWork_10 as hm10
+import pyodbc
+import HomeWork_10 as db
 
 
 class Post:
@@ -44,9 +46,10 @@ class News(Post):
 
     def get_data_to_db(self, table, field1, field2, field3):
         db = hm10.DBConnetion('test1.db')
+        db.connect()
         try:
-            db.create_table(table, 'text', 'city', 'data')
-        finally:
+            db.create_table(table, 'text', 'advanced', 'data')
+        except pyodbc.Error:
             db.insert(table, field1, field2, field3)
 
 
@@ -65,9 +68,10 @@ class Ad(Post):
 
     def get_data_to_db(self, table, field1, field2, field3):
         db = hm10.DBConnetion('test1.db')
+        db.connect()
         try:
-            db.create_table(table,'text', 'data_until', 'data')
-        finally:
+            db.create_table(table,'text', 'advanced', 'data')
+        except pyodbc.Error:
             db.insert(table, field1, field2, field3)
 
 
@@ -95,24 +99,35 @@ class Recipe(Post):
 
     def get_data_to_db(self, table, field1, field2, field3):
         db = hm10.DBConnetion('test1.db')
+        db.connect()
         try:
-            db.create_table(table, 'text', 'complexity', 'data')
-        finally:
+            db.create_table(table, 'text', 'advanced', 'data')
+        except pyodbc.Error:
             db.insert(table, field1, field2, field3)
 
 
 def start():
+    hm10 = db.DBConnetion('test1.db')
     while True:
         txt = input("Specify type of post:\n1 - News\n2 - Ad \n3 - Recipe\n")
         if txt == "1":
             new_news = News("News", input('Print your text\n'), input("Print your city\n"), datetime.datetime.today())
             new_news.publish_article(new_news.to_text())
+            # if not hm10.select_param('*', 'News', input('Print your text\n'),  input("Print your city\n")):
+            #     new_news.get_data_to_db('News', input('Print your text\n'),  input("Print your city\n"),
+            #                             datetime.datetime.today())
         elif txt == "2":
             new_ad = Ad("Ad", input('Print your text\n'), input("Print endDate of ad in dd/mm/yyyy format\n"))
             new_ad.publish_article(new_ad.to_text())
+            # if not hm10.select_param('*', 'Ad', input('Print your text\n'), input("Print endDate of ad in dd/mm/yyyy format\n")):
+            #     new_ad.get_data_to_db('Ad', input('Print your text\n'), input("Print endDate of ad in dd/mm/yyyy format\n"),
+            #                             datetime.datetime.today())
         elif txt == "3":
             new_recipe = Recipe("Recipe of the day", input('Print your recipe\n'), datetime.datetime.today())
             new_recipe.publish_article(new_recipe.to_text())
+            # if not hm10.select_param('*', 'Recipe', input('Print your recipe\n'),  new_recipe.complexity_of_recipe()):
+            #     new_recipe.get_data_to_db('Recipe', input('Print your recipe\n'),  new_recipe.complexity_of_recipe(),
+            #                             datetime.datetime.today())
         else:
             print('ERROR')
             exit(0)

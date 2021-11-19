@@ -12,7 +12,7 @@ from HomeWork_4_1 import list_of_line
 import HomeWork_7 as Csv
 import HomeWork_8 as Json
 import HomeWork_9 as Xml
-# import HomeWork_5_2 as hm10
+import HomeWork_10 as db
 
 
 class ByTxt:
@@ -31,6 +31,7 @@ class ByTxt:
             self.parse_file(os.path.join(os.path.dirname(__file__), 'Default_folder', 'New.txt'))
 
     def parse_file(self, file_input):
+        hm10 = db.DBConnetion('test1.db')
         with open(file_input) as file:
             text = file.read()
             text_from = text_from_list(list_of_line(text))
@@ -40,21 +41,24 @@ class ByTxt:
                     parts = line.split('.')
                     new_news = Post.News("News", parts[1].rstrip(), parts[2].rstrip(), datetime.datetime.today())
                     new_news.publish_article(new_news.to_text())
-                    new_news.get_data_to_db('News', parts[1].rstrip(), parts[2].rstrip(), datetime.datetime.today())
+                    if not hm10.select_param('*', 'News', parts[1].rstrip(), parts[2].rstrip()):
+                        new_news.get_data_to_db('News', parts[1].rstrip(), parts[2].rstrip(), datetime.datetime.today())
                 elif line.find('Ad') != -1:
                     parts = line.split('.')
                     new_ad = Post.Ad("Ad", parts[1].rstrip(), parts[2].rstrip())
                     new_ad.publish_article(new_ad.to_text())
-                    new_ad.get_data_to_db('Ad', parts[1].rstrip(), parts[2].rstrip(), datetime.datetime.today())
+                    if not hm10.select_param('*', 'Ad', parts[1].rstrip(), parts[2].rstrip()):
+                        new_ad.get_data_to_db('Ad', parts[1].rstrip(), parts[2].rstrip(), datetime.datetime.today())
                 elif line.find('Recipe') != -1:
                     parts = line.split('.')
                     new_recipe = Post.Recipe("Recipe of the day", parts[1].rstrip(), datetime.datetime.today())
                     new_recipe.publish_article(new_recipe.to_text())
-                    new_recipe.get_data_to_db('Recipe', parts[1].rstrip(), datetime.datetime.today(),
+                    if not hm10.select_param('*', 'Recipe', parts[1].rstrip(), new_recipe.complexity_of_recipe()):
+                        new_recipe.get_data_to_db('Recipe', parts[1].rstrip(), new_recipe.complexity_of_recipe(),
                                               datetime.datetime.today())
                 else:
                     print("error")
-            os.remove(file_input)
+            # os.remove(file_input)
 
 
 def user_choose():

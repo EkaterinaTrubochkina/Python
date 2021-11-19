@@ -6,6 +6,7 @@ import json
 import datetime
 import os
 import HomeWork_5_1 as Post
+import HomeWork_10 as db
 
 
 class ByJson:
@@ -28,18 +29,25 @@ class ByJson:
             os.remove(os.path.join(os.path.dirname(__file__), 'Default_folder', 'New.json'))
 
     def parse_file(self, file_input):
+        hm10 = db.DBConnetion('test1.db')
         with open(file_input) as json_file:
             data = json.load(json_file)
             for i in data:
                 if i["type"] == "News":
                     new_news = Post.News("News", i["text"], i["city"], datetime.datetime.today())
                     new_news.publish_article(new_news.to_text())
+                    if not hm10.select_param('*', 'News', i["text"], i["city"]):
+                        new_news.get_data_to_db('News', i["text"], i["city"], datetime.datetime.today())
                 elif i["type"] == "Ad":
                     new_ad = Post.Ad("Ad", i["text"], i["data"])
                     new_ad.publish_article(new_ad.to_text())
+                    if not hm10.select_param('*', 'Ad', i["text"], new_ad.end_date):
+                        new_news.get_data_to_db('Ad', i["text"], new_ad.end_date, datetime.datetime.today())
                 elif i["type"] == "Recipe":
                     new_recipe = Post.Recipe("Recipe of the day", i["text"], datetime.datetime.today())
                     new_recipe.publish_article(new_recipe.to_text())
+                    if not hm10.select_param('*', 'Ad', i["text"], new_recipe.complexity_of_recipe()):
+                        new_news.get_data_to_db('Recipe', i["text"], new_recipe.complexity_of_recipe(), datetime.datetime.today())
                 else:
                     print("error")
 

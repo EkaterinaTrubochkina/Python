@@ -6,6 +6,7 @@ import xml.etree.ElementTree as ET
 import datetime
 import os
 import HomeWork_5_1 as Post
+import HomeWork_10 as db
 
 
 class ByXml:
@@ -28,6 +29,7 @@ class ByXml:
             os.remove(os.path.join(os.path.dirname(__file__), 'Default_folder', 'New.xml'))
 
     def parse_file(self, file_input):
+        hm10 = db.DBConnetion('test1.db')
         xml_file = ET.parse(file_input)
         root = xml_file.getroot()
         for row in root:
@@ -35,12 +37,19 @@ class ByXml:
                 if tags.text == "News":
                     new_news = Post.News("News", root.find('row/text').text, root.find('row/city').text, datetime.datetime.today())
                     new_news.publish_article(new_news.to_text())
+                    if not hm10.select_param('*', 'News', root.find('row/text').text, root.find('row/city').text):
+                        new_news.get_data_to_db('News',  root.find('row/text').text, root.find('row/city').text, datetime.datetime.today())
                 elif tags.text == "Ad":
                     new_ad = Post.Ad("Ad", row.find('text').text, row.find('data').text)
                     new_ad.publish_article(new_ad.to_text())
+                    if not hm10.select_param('*', 'Ad',  row.find('text').text, row.find('data').text):
+                        new_ad.get_data_to_db('Ad', row.find('text').text, row.find('data').text, datetime.datetime.today())
                 elif tags.text == "Recipe":
                     new_recipe = Post.Recipe("Recipe of the day", row.find('text').text, datetime.datetime.today())
                     new_recipe.publish_article(new_recipe.to_text())
+                    if not hm10.select_param('*', 'Recipe', row.find('text').text, new_recipe.complexity_of_recipe()):
+                        new_recipe.get_data_to_db('Recipe', row.find('text').text, new_recipe.complexity_of_recipe(),
+                                              datetime.datetime.today())
 
 # Draft version
 # xml_file = ET.parse('New.xml')
